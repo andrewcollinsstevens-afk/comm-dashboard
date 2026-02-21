@@ -22,6 +22,8 @@
 - **Be explicit about timezones** — never use ambiguous UTC conversions
 - **Double-check all technical details** (cron expressions, API keys, schedules) match requests
 - **Correct errors immediately** when caught — don't let inconsistencies slip through
+- **Check memory before asking** — Always search MEMORY.md and prior context before requesting info (tokens, credentials, configurations, decisions) that was already provided
+- **Avoid repetition** — Don't ask for the same thing twice; review session history and memory files first
 
 ### Document Generation Standards
 - **No blank pages** in PDFs unless explicitly requested
