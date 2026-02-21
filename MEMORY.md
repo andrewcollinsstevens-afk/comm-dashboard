@@ -38,6 +38,14 @@
 - No filtering — complete audit trail of delegated work
 - When delivering updates to Andrew, reference specific log files (e.g., `memory/subagent-communications/active/[sessionId].jsonl`)
 
+### Financial Data Security (CRITICAL)
+- **NEVER log financial information to public dashboard**
+- **NEVER share financial data without explicit Andrew approval**
+- **NEVER discuss financial details in group chats or non-private contexts**
+- Financial Agent runs in isolated sessions only
+- All financial communications stored in private `memory/financial-agent-logs/`
+- Financial results delivered to Andrew only (direct, private communication)
+
 ### API & Budget Guardrails (CRITICAL)
 - **Rate limits:** 5s between API calls, 10s between web searches
 - **Max searches:** 5 per batch, then 2-minute break before next batch
@@ -93,12 +101,14 @@
 
 ## Agent Specialists
 
-### Financial Agent (Active)
+### Financial Agent (Active) - CONFIDENTIAL
 - **Role:** Specialized agent for financial analysis, modeling, research
 - **Trigger:** On-demand when financial task received
 - **Sub-agents:** Spawns as needed for market research, analysis, modeling
-- **Reporting:** Financial Agent → Tim → Andrew
-- **Logging:** All communications to dashboard
+- **Reporting:** Financial Agent → Tim → Andrew (private only)
+- **Logging:** CONFIDENTIAL - Private logs only (`memory/financial-agent-logs/`)
+- **Security:** NO financial data logged to public dashboard. Isolated session. Andrew-only access.
+- **Constraint:** Financial information requires explicit Andrew approval before any sharing
 
 ## Next Big Milestones
 

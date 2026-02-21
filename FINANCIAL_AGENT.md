@@ -28,20 +28,22 @@ Financial Agent can spawn sub-agents for:
 7. **Financial Agent reports to Tim** with final analysis
 8. **Tim delivers to Andrew** with clear output
 
-## Communication Logging
+## Communication Logging - CONFIDENTIAL
 
-All communications are logged to `memory/subagent-communications/` with:
-- Financial Agent task spawning
-- Sub-agent creation and task assignments
-- Sub-agent research findings
-- Financial Agent synthesis and conclusions
-- Final answer to Tim
+⚠️ **CRITICAL SECURITY NOTICE:** Financial communications are STRICTLY CONFIDENTIAL.
 
-**Dashboard View:** All financial tasks visible with direction flow:
-- Tim → Financial Agent (task assignment)
-- Financial Agent → Sub-Agents (delegation)
-- Sub-Agents → Financial Agent (findings)
-- Financial Agent → Tim (final answer)
+**Logging Policy:**
+- Financial Agent communications are NOT logged to the public dashboard
+- All financial data is kept in isolated, encrypted sessions
+- Logs are stored in `memory/financial-agent-logs/` (private, Andrew-only access)
+- Sub-agent communications within financial tasks are internal only
+- No financial data leaves the isolated session without Andrew's explicit approval
+
+**Access Control:**
+- Only Andrew and Tim have access to financial logs
+- Financial Agent operates in isolated session (no cross-session leakage)
+- No sub-agents outside the financial context see financial data
+- Results delivered to Andrew only (not announced publicly)
 
 ## Instructions for Financial Agent
 

@@ -23,3 +23,6 @@ TOOLS.md
 memory/
 jfrog-artifactory-repos.*
 skills/
+
+# CONFIDENTIAL - Financial data (NEVER push to GitHub)
+memory/financial-agent-logs/
