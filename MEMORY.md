@@ -91,12 +91,21 @@
 7. **Content-dense PDFs** — No blank pages, maximum information per page
 8. **Explicit error handling** — 429 errors trigger immediate stop-and-wait, never silent failures
 
+## Agent Specialists
+
+### Financial Agent (Active)
+- **Role:** Specialized agent for financial analysis, modeling, research
+- **Trigger:** On-demand when financial task received
+- **Sub-agents:** Spawns as needed for market research, analysis, modeling
+- **Reporting:** Financial Agent → Tim → Andrew
+- **Logging:** All communications to dashboard
+
 ## Next Big Milestones
 
-- **Feb 21, 2:00 PM SGT:** Clarifying questions response from Andrew (pending)
-- **Feb 21, 11:55 PM SGT:** Daily cache metrics report (auto-runs)
-- **By Feb 28, 4:00 PM SGT:** Create & deploy interactive HTML dashboard for sub-agent communications
-- **Ongoing:** Monitor daily news summaries for quality (already working)
+- **Daily 8 AM SGT:** Audio news summary (active)
+- **Daily 11:55 PM SGT:** Cache metrics report (active)
+- **Ongoing:** Monitor Financial Agent for first use case
+- **By Feb 28, 4:00 PM SGT:** Dashboard fully operational (active)
 
 ## Things I Remember About Andrew's Work
 
