@@ -422,9 +422,20 @@
                 </div>
             </header>
 
-            <div class="controls">
-                <input type="text" id="searchInput" placeholder="Search by task name, status, or ID..." onkeyup="filterData()">
-                <button onclick="clearFilters()" style="padding: 10px 20px; background: #3b82f6; border: none; border-radius: 6px; color: white; cursor: pointer; font-weight: 500;">Clear</button>
+            <div class="controls" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px;">
+                <input type="text" id="searchInput" placeholder="Search task name, status..." onkeyup="filterData()">
+                
+                <input type="date" id="dateFromInput" placeholder="From date" onchange="filterData()">
+                <input type="date" id="dateToInput" placeholder="To date" onchange="filterData()">
+                
+                <select id="agentFilter" onchange="filterData()" style="padding: 10px 15px; background: #1e293b; border: 1px solid #334155; border-radius: 6px; color: #e2e8f0; font-size: 0.95em;">
+                    <option value="">All Agents</option>
+                    <option value="main→subagent">I → Sub-Agent (Outgoing)</option>
+                    <option value="subagent→main">Sub-Agent → Me (Incoming)</option>
+                    <option value="subagent→subagent">Sub-Agent ↔ Sub-Agent</option>
+                </select>
+                
+                <button onclick="clearFilters()" style="padding: 10px 20px; background: #3b82f6; border: none; border-radius: 6px; color: white; cursor: pointer; font-weight: 500;">Clear All</button>
             </div>
 
             <div class="stats">
@@ -574,19 +585,48 @@
 
         function filterData() {
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const dateFrom = document.getElementById('dateFromInput').value ? new Date(document.getElementById('dateFromInput').value) : null;
+            const dateTo = document.getElementById('dateToInput').value ? new Date(document.getElementById('dateToInput').value) : null;
+            const agentFilter = document.getElementById('agentFilter').value;
+
             filteredData = allData.filter(record => {
-                return (
+                // Text search
+                const matchesSearch = !searchTerm || (
                     (record.taskName && record.taskName.toLowerCase().includes(searchTerm)) ||
                     (record.status && record.status.toLowerCase().includes(searchTerm)) ||
                     (record.sessionId && record.sessionId.toLowerCase().includes(searchTerm)) ||
-                    (record.outcome && record.outcome.toLowerCase().includes(searchTerm))
+                    (record.outcome && record.outcome.toLowerCase().includes(searchTerm)) ||
+                    (record.message && record.message.toLowerCase().includes(searchTerm))
                 );
+
+                // Date filter
+                let matchesDate = true;
+                if (dateFrom || dateTo) {
+                    const recordDate = new Date(record.timestamp);
+                    if (dateFrom) {
+                        dateFrom.setHours(0, 0, 0, 0);
+                        matchesDate = matchesDate && recordDate >= dateFrom;
+                    }
+                    if (dateTo) {
+                        dateTo.setHours(23, 59, 59, 999);
+                        matchesDate = matchesDate && recordDate <= dateTo;
+                    }
+                }
+
+                // Agent/Direction filter
+                const matchesAgent = !agentFilter || record.direction === agentFilter;
+
+                return matchesSearch && matchesDate && matchesAgent;
             });
+
             updateDisplay();
         }
 
         function clearFilters() {
             document.getElementById('searchInput').value = '';
+            document.getElementById('dateFromInput').value = '';
+            document.getElementById('dateToInput').value = '';
+            document.getElementById('agentFilter').value = '';
             filteredData = [...allData];
             updateDisplay();
         }
