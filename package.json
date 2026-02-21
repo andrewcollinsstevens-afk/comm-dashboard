@@ -1,0 +1,22 @@
+{
+  "name": "comm-dashboard",
+  "version": "1.0.0",
+  "description": "Sub-Agent Communications Dashboard Backend",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "PORT=8642 AUTH_TOKEN=test-token node server.js"
+  },
+  "keywords": [
+    "openclaw",
+    "sub-agent",
+    "communications",
+    "dashboard"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5"
+  }
+}

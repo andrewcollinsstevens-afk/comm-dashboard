@@ -1,0 +1,21 @@
+[Unit]
+Description=Sub-Agent Communications Dashboard Backend
+After=network.target
+StartLimitBurst=5
+StartLimitIntervalSec=10
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/root/.openclaw/workspace
+Environment="PORT=8642"
+Environment="AUTH_TOKEN=openclaw-comm-dashboard-2026"
+Environment="WORKSPACE_PATH=/root/.openclaw/workspace"
+ExecStart=/usr/bin/node /root/.openclaw/workspace/server.js
+Restart=always
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

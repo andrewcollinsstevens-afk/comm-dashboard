@@ -1,0 +1,25 @@
+node_modules/
+package-lock.json
+.env
+.env.local
+*.pem
+*.key
+*.secret
+.DS_Store
+Thumbs.db
+*.log
+
+# Sensitive files
+MEMORY.md
+GUARDRAILS.md
+USER.md
+IDENTITY.md
+SOUL.md
+BOOTSTRAP.md
+AGENTS.md
+HEARTBEAT.md
+TOOLS.md
+.openclaw/
+memory/
+jfrog-artifactory-repos.*
+skills/
