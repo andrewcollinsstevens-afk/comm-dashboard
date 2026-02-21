@@ -39,12 +39,14 @@
 - When delivering updates to Andrew, reference specific log files (e.g., `memory/subagent-communications/active/[sessionId].jsonl`)
 
 ### Financial Data Security (CRITICAL)
-- **NEVER log financial information to public dashboard**
+- **Dual-tier logging:** Public dashboard shows redacted communication flow only
+- **Redact sensitive data:** Currency, amounts, percentages, strategies hidden on dashboard
+- **Private logs:** Full unredacted data in `memory/financial-agent-logs/` (Andrew-only)
 - **NEVER share financial data without explicit Andrew approval**
 - **NEVER discuss financial details in group chats or non-private contexts**
 - Financial Agent runs in isolated sessions only
-- All financial communications stored in private `memory/financial-agent-logs/`
 - Financial results delivered to Andrew only (direct, private communication)
+- Dashboard shows task status (e.g., "Financial analysis in progress") but not financial details
 
 ### API & Budget Guardrails (CRITICAL)
 - **Rate limits:** 5s between API calls, 10s between web searches

@@ -28,22 +28,39 @@ Financial Agent can spawn sub-agents for:
 7. **Financial Agent reports to Tim** with final analysis
 8. **Tim delivers to Andrew** with clear output
 
-## Communication Logging - CONFIDENTIAL
+## Communication Logging - DUAL-TIER CONFIDENTIALITY
 
 ⚠️ **CRITICAL SECURITY NOTICE:** Financial communications are STRICTLY CONFIDENTIAL.
 
-**Logging Policy:**
-- Financial Agent communications are NOT logged to the public dashboard
-- All financial data is kept in isolated, encrypted sessions
-- Logs are stored in `memory/financial-agent-logs/` (private, Andrew-only access)
-- Sub-agent communications within financial tasks are internal only
-- No financial data leaves the isolated session without Andrew's explicit approval
+**Logging Policy (Dual-Tier):**
+
+**Public Dashboard (Redacted):**
+- ✅ Shows task status and communication flow
+- ✓ Shows "Financial Agent started/completed"
+- ✓ Shows "Net worth growth analysis in progress"
+- ✗ Hides all financial numbers (amounts, percentages, targets)
+- ✗ Hides specific strategies and sensitive metrics
+- ✗ Redacts personal financial information
+
+**Private Logs (Full Data):**
+- Stored in `memory/financial-agent-logs/` (Andrew-only access)
+- Contains complete, unredacted financial analysis
+- Full context for strategy implementation
+- Complete audit trail
+
+**Redaction Rules:**
+- Currency amounts (SGD, USD, etc.) → `[REDACTED]`
+- Percentages → `[REDACTED]%`
+- Net worth references → `[NET WORTH REDACTED]`
+- Monthly savings → `[MONTHLY SAVINGS REDACTED]`
+- Investment returns → `[RETURNS REDACTED]`
+- Large numbers (6+ digits) → `[REDACTED]`
 
 **Access Control:**
-- Only Andrew and Tim have access to financial logs
+- Public dashboard: Shows communication only, no sensitive data
+- Private logs: Full data, Andrew-only access
 - Financial Agent operates in isolated session (no cross-session leakage)
-- No sub-agents outside the financial context see financial data
-- Results delivered to Andrew only (not announced publicly)
+- Results delivered to Andrew only with private context
 
 ## Instructions for Financial Agent
 
