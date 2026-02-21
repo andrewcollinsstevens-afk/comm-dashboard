@@ -11,6 +11,7 @@ const fs = require('fs');
 const path = require('path');
 const cors = require('cors');
 const { retryWithBackoff } = require('./error-handler');
+const { createRedactedLogEntry } = require('./financial-redaction');
 
 const app = express();
 const PORT = process.env.PORT || 8642;
@@ -18,6 +19,7 @@ const AUTH_TOKEN = process.env.AUTH_TOKEN || 'openclaw-comm-dashboard-2026';
 const LOGS_DIR = path.join(process.env.WORKSPACE_PATH || '/root/.openclaw/workspace', 'memory', 'subagent-communications');
 const ACTIVE_DIR = path.join(LOGS_DIR, 'active');
 const ARCHIVE_DIR = path.join(LOGS_DIR, 'archive');
+const FINANCIAL_LOGS_DIR = path.join(process.env.WORKSPACE_PATH || '/root/.openclaw/workspace', 'memory', 'financial-agent-logs');
 
 app.use(cors());
 app.use(express.json());
@@ -86,6 +88,28 @@ app.get('/api/communications', authenticate, async (req, res) => {
                             allLogs.push(JSON.parse(line));
                         } catch (e) {
                             console.error(`Error parsing line in ${file}:`, e.message);
+                        }
+                    }
+                });
+            });
+        }
+
+        // Read financial agent logs (with redaction)
+        if (fs.existsSync(FINANCIAL_LOGS_DIR)) {
+            const financialFiles = fs.readdirSync(FINANCIAL_LOGS_DIR).filter(f => f.endsWith('.jsonl'));
+            financialFiles.forEach(file => {
+                const filePath = path.join(FINANCIAL_LOGS_DIR, file);
+                const content = fs.readFileSync(filePath, 'utf-8');
+                const lines = content.trim().split('\n');
+                lines.forEach(line => {
+                    if (line.trim()) {
+                        try {
+                            const logEntry = JSON.parse(line);
+                            // Apply redaction to financial logs for dashboard
+                            const redactedEntry = createRedactedLogEntry(logEntry);
+                            allLogs.push(redactedEntry);
+                        } catch (e) {
+                            console.error(`Error parsing financial log in ${file}:`, e.message);
                         }
                     }
                 });
