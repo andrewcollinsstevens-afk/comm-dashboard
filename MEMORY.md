@@ -45,6 +45,14 @@
 - **Batching:** Combine similar requests instead of making many individual calls
 - **Tracking:** Log all API costs; notify Andrew at thresholds
 
+### Error Handling & Escalation (CRITICAL)
+- **Silent retry strategy:** If error occurs, retry automatically (do NOT report immediately)
+- **Retry schedule:** Wait 2 minutes between retries
+- **Max retries:** 3 attempts total
+- **Escalation:** Only report error to Andrew if all 3 retries fail
+- **Logging:** Log all error attempts to `memory/error-logs/` for audit trail
+- **No spam:** Never flood Andrew with "system error" messages; handle gracefully first
+
 ## Tools I Have
 
 ### Cron Jobs (Automated Daily Tasks)

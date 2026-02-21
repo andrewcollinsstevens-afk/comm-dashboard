@@ -10,6 +10,7 @@ const express = require('express');
 const fs = require('fs');
 const path = require('path');
 const cors = require('cors');
+const { retryWithBackoff } = require('./error-handler');
 
 const app = express();
 const PORT = process.env.PORT || 8642;
@@ -48,9 +49,9 @@ app.get('/api/verify-token', (req, res) => {
     res.json({ valid: true });
 });
 
-// Get all communications logs
-app.get('/api/communications', authenticate, (req, res) => {
-    try {
+// Get all communications logs (with auto-retry on error)
+app.get('/api/communications', authenticate, async (req, res) => {
+    const readLogsFunction = async () => {
         const allLogs = [];
 
         // Read active logs
@@ -94,6 +95,16 @@ app.get('/api/communications', authenticate, (req, res) => {
         // Sort by timestamp descending
         allLogs.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
 
+        return allLogs;
+    };
+
+    try {
+        const allLogs = await retryWithBackoff(readLogsFunction, 'api-read-communications');
+        
+        if (allLogs === null) {
+            return res.status(500).json({ error: 'Failed to read logs after 3 retries' });
+        }
+
         res.json({
             count: allLogs.length,
             data: allLogs,
@@ -105,9 +116,9 @@ app.get('/api/communications', authenticate, (req, res) => {
     }
 });
 
-// Get summary statistics
-app.get('/api/stats', authenticate, (req, res) => {
-    try {
+// Get summary statistics (with auto-retry on error)
+app.get('/api/stats', authenticate, async (req, res) => {
+    const calculateStatsFunction = async () => {
         const allLogs = [];
 
         if (fs.existsSync(ACTIVE_DIR)) {
@@ -148,13 +159,23 @@ app.get('/api/stats', authenticate, (req, res) => {
         const totalCost = allLogs.reduce((sum, r) => sum + (r.cost?.api_cost || 0), 0);
         const avgDuration = totalTasks > 0 ? Math.round(allLogs.reduce((sum, r) => sum + (r.duration_seconds || 0), 0) / totalTasks) : 0;
 
-        res.json({
+        return {
             totalTasks,
             completedTasks,
             failedTasks,
             totalCost: parseFloat(totalCost.toFixed(4)),
             avgDuration
-        });
+        };
+    };
+
+    try {
+        const stats = await retryWithBackoff(calculateStatsFunction, 'api-calculate-stats');
+        
+        if (stats === null) {
+            return res.status(500).json({ error: 'Failed to calculate stats after 3 retries' });
+        }
+
+        res.json(stats);
     } catch (error) {
         console.error('Error calculating stats:', error);
         res.status(500).json({ error: 'Failed to calculate stats', details: error.message });
