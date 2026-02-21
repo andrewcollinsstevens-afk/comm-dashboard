@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sub-Agent Communications Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #1e3a8a 0%, #0f172a 100%);
+            color: #e2e8f0;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #60a5fa, #93c5fd);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            color: #94a3b8;
+            font-size: 1.1em;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .upload-section {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        input[type="file"], input[type="text"] {
+            padding: 10px 15px;
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 6px;
+            color: #e2e8f0;
+            font-size: 0.95em;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        input[type="file"]::-webkit-file-upload-button {
+            padding: 8px 16px;
+            background: #3b82f6;
+            border: none;
+            border-radius: 4px;
+            color: white;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        input[type="file"]::-webkit-file-upload-button:hover {
+            background: #2563eb;
+        }
+
+        button {
+            padding: 10px 20px;
+            background: #3b82f6;
+            border: none;
+            border-radius: 6px;
+            color: white;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background: #2563eb;
+        }
+
+        button:disabled {
+            background: #64748b;
+            cursor: not-allowed;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #60a5fa;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #94a3b8;
+            font-size: 0.9em;
+        }
+
+        .table-wrapper {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #0f172a;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #93c5fd;
+            border-bottom: 2px solid #334155;
+        }
+
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #334155;
+        }
+
+        tr:hover {
+            background: #334155;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 500;
+        }
+
+        .status-completed {
+            background: #10b981;
+            color: white;
+        }
+
+        .status-pending {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .status-in_progress {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .status-failed {
+            background: #ef4444;
+            color: white;
+        }
+
+        .cost-badge {
+            color: #60a5fa;
+            font-weight: 500;
+        }
+
+        .error-text {
+            color: #fca5a5;
+            font-size: 0.9em;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #94a3b8;
+        }
+
+        .empty-state svg {
+            width: 64px;
+            height: 64px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .filter-results {
+            color: #94a3b8;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
+
+        .duration {
+            color: #cbd5e1;
+            font-size: 0.9em;
+        }
+
+        .task-name {
+            color: #93c5fd;
+            font-weight: 500;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .controls {
+                flex-direction: column;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            table {
+                font-size: 0.9em;
+            }
+
+            th, td {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📊 Sub-Agent Communications</h1>
+            <p class="subtitle">Monitor delegated tasks, costs, and status</p>
+        </header>
+
+        <div class="controls">
+            <div class="upload-section">
+                <input type="file" id="fileInput" accept=".jsonl,.json" multiple>
+                <input type="text" id="searchInput" placeholder="Search by task name, status, or ID...">
+                <button onclick="filterData()">Search</button>
+                <button onclick="clearFilters()">Clear</button>
+            </div>
+        </div>
+
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-value" id="totalTasks">0</div>
+                <div class="stat-label">Total Tasks</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="completedTasks">0</div>
+                <div class="stat-label">Completed</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="totalCost">$0.00</div>
+                <div class="stat-label">Total Cost</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="avgDuration">0s</div>
+                <div class="stat-label">Avg Duration</div>
+            </div>
+        </div>
+
+        <div class="table-wrapper">
+            <div id="filterResults" class="filter-results"></div>
+            <table id="dataTable">
+                <thead>
+                    <tr>
+                        <th>Timestamp</th>
+                        <th>Task Name</th>
+                        <th>Status</th>
+                        <th>Outcome</th>
+                        <th>Cost</th>
+                        <th>Duration</th>
+                        <th>Error</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    <tr>
+                        <td colspan="7" style="text-align: center; padding: 40px; color: #94a3b8;">
+                            Upload JSONL files to view sub-agent communications
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        let allData = [];
+        let filteredData = [];
+
+        document.getElementById('fileInput').addEventListener('change', handleFileUpload);
+
+        function handleFileUpload(event) {
+            const files = event.target.files;
+            allData = [];
+
+            for (let file of files) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const content = e.target.result;
+                    const lines = content.trim().split('\n');
+                    
+                    for (let line of lines) {
+                        if (line.trim()) {
+                            try {
+                                const record = JSON.parse(line);
+                                allData.push(record);
+                            } catch (error) {
+                                console.error('Error parsing JSON line:', line, error);
+                            }
+                        }
+                    }
+
+                    if (Array.from(files).indexOf(file) === files.length - 1) {
+                        allData.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+                        filteredData = [...allData];
+                        updateDisplay();
+                    }
+                };
+                reader.readAsText(file);
+            }
+        }
+
+        function filterData() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            filteredData = allData.filter(record => {
+                return (
+                    (record.taskName && record.taskName.toLowerCase().includes(searchTerm)) ||
+                    (record.status && record.status.toLowerCase().includes(searchTerm)) ||
+                    (record.sessionId && record.sessionId.toLowerCase().includes(searchTerm)) ||
+                    (record.outcome && record.outcome.toLowerCase().includes(searchTerm))
+                );
+            });
+            updateDisplay();
+        }
+
+        function clearFilters() {
+            document.getElementById('searchInput').value = '';
+            filteredData = [...allData];
+            updateDisplay();
+        }
+
+        function updateDisplay() {
+            renderTable();
+            updateStats();
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('tableBody');
+            
+            if (filteredData.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 40px; color: #94a3b8;">No data found</td></tr>';
+                document.getElementById('filterResults').textContent = '';
+                return;
+            }
+
+            document.getElementById('filterResults').textContent = 
+                `Showing ${filteredData.length} of ${allData.length} tasks`;
+
+            tbody.innerHTML = filteredData.map(record => `
+                <tr>
+                    <td>${formatDate(record.timestamp)}</td>
+                    <td><span class="task-name">${record.taskName || 'N/A'}</span></td>
+                    <td><span class="status-badge status-${record.status}">${record.status}</span></td>
+                    <td>${record.outcome || '-'}</td>
+                    <td><span class="cost-badge">$${((record.cost?.api_cost || 0)).toFixed(4)}</span></td>
+                    <td><span class="duration">${record.duration_seconds || 0}s</span></td>
+                    <td>${record.error ? `<span class="error-text">${record.error}</span>` : '-'}</td>
+                </tr>
+            `).join('');
+        }
+
+        function updateStats() {
+            const totalTasks = allData.length;
+            const completedTasks = allData.filter(r => r.status === 'completed').length;
+            const totalCost = allData.reduce((sum, r) => sum + (r.cost?.api_cost || 0), 0);
+            const avgDuration = totalTasks > 0 ? Math.round(allData.reduce((sum, r) => sum + (r.duration_seconds || 0), 0) / totalTasks) : 0;
+
+            document.getElementById('totalTasks').textContent = totalTasks;
+            document.getElementById('completedTasks').textContent = completedTasks;
+            document.getElementById('totalCost').textContent = `$${totalCost.toFixed(4)}`;
+            document.getElementById('avgDuration').textContent = `${avgDuration}s`;
+        }
+
+        function formatDate(timestamp) {
+            if (!timestamp) return '-';
+            const date = new Date(timestamp);
+            return date.toLocaleString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+        }
+    </script>
+</body>
+</html>
