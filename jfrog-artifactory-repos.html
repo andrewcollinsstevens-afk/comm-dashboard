@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JFrog Artifactory Repository Types Guide</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: white;
+            padding: 40px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 8px;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        .section {
+            margin-bottom: 40px;
+        }
+        h2 {
+            color: #667eea;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+        h3 {
+            color: #764ba2;
+            font-size: 1.3em;
+            margin-top: 25px;
+            margin-bottom: 15px;
+        }
+        .repo-type {
+            background: #f8f9ff;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin-bottom: 25px;
+            border-radius: 4px;
+        }
+        .repo-type h3 {
+            margin-top: 0;
+            color: #667eea;
+        }
+        .key-points {
+            background: white;
+            border: 1px solid #e0e0e0;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+        .key-points strong {
+            color: #764ba2;
+        }
+        .example {
+            background: #f0f4ff;
+            border-left: 4px solid #764ba2;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95em;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        th {
+            background: #667eea;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        tr:hover {
+            background: #f8f9ff;
+        }
+        .use-case {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+        .use-case strong {
+            color: #ff6f00;
+        }
+        .comparison-row {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .comparison-item {
+            background: #f8f9ff;
+            padding: 15px;
+            border-radius: 4px;
+            border-left: 4px solid #667eea;
+        }
+        .comparison-item strong {
+            color: #764ba2;
+            display: block;
+            margin-bottom: 10px;
+        }
+        .conclusion {
+            background: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            padding: 20px;
+            margin-top: 40px;
+            border-radius: 4px;
+        }
+        .conclusion h3 {
+            color: #2e7d32;
+            margin-top: 0;
+        }
+        .page-break {
+            page-break-after: always;
+            margin-bottom: 40px;
+            padding-bottom: 40px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 2px solid #e0e0e0;
+            color: #666;
+            font-size: 0.9em;
+        }
+        ul, ol {
+            margin-left: 20px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            background: #667eea;
+            color: white;
+            border-radius: 20px;
+            font-size: 0.85em;
+            margin-right: 8px;
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>JFrog Artifactory</h1>
+        <p>Complete Guide to Repository Types</p>
+        <p style="font-size: 0.9em; margin-top: 10px;">Understanding Local, Remote, Virtual, and Federated Repositories</p>
+    </div>
+
+    <!-- Table of Contents -->
+    <div class="section">
+        <h2>Table of Contents</h2>
+        <ol>
+            <li>Introduction to JFrog Artifactory</li>
+            <li>Repository Types Overview</li>
+            <li>Local Repositories</li>
+            <li>Remote Repositories</li>
+            <li>Virtual Repositories</li>
+            <li>Federated Repositories</li>
+            <li>Comparison Matrix</li>
+            <li>Best Practices & Recommendations</li>
+        </ol>
+    </div>
+
+    <!-- Introduction -->
+    <div class="section page-break">
+        <h2>Introduction to JFrog Artifactory</h2>
+        <p>JFrog Artifactory is a universal package repository manager that allows organizations to manage all binary artifacts generated throughout the software development lifecycle. It serves as a central hub for storing, retrieving, and managing artifacts across different package types including Maven, Docker, NPM, Python, Ruby, Terraform, and many others.</p>
+        
+        <h3>Why Repository Types Matter</h3>
+        <p>Artifactory provides four main repository types, each designed for specific use cases and organizational needs:</p>
+        <ul>
+            <li><strong>Local Repositories:</strong> Store internally developed artifacts</li>
+            <li><strong>Remote Repositories:</strong> Cache external dependencies</li>
+            <li><strong>Virtual Repositories:</strong> Provide unified access points</li>
+            <li><strong>Federated Repositories:</strong> Enable multi-site collaboration</li>
+        </ul>
+    </div>
+
+    <!-- Local Repositories -->
+    <div class="section">
+        <h2>Local Repositories</h2>
+        
+        <div class="repo-type">
+            <h3>What Are Local Repositories?</h3>
+            <p>Local repositories are the core storage mechanism in Artifactory where organizations host artifacts that they develop and maintain internally. These are the primary repositories where your build pipeline deploys compiled artifacts, binaries, and packages.</p>
+            
+            <div class="key-points">
+                <strong>Key Characteristics:</strong>
+                <ul>
+                    <li>Hosted locally within the Artifactory instance</li>
+                    <li>Artifacts uploaded directly by CI/CD pipelines or developers</li>
+                    <li>Full control over artifacts and metadata</li>
+                    <li>No external dependencies or proxying</li>
+                    <li>Source of truth for proprietary artifacts</li>
+                </ul>
+            </div>
+
+            <h3>Use Cases</h3>
+            <div class="use-case">
+                <strong>🏢 Internal Artifact Storage:</strong> Store compiled JAR files, Docker images, WAR files, and other binaries produced by your build pipelines
+            </div>
+            <div class="use-case">
+                <strong>📦 Release Management:</strong> Maintain versioned releases of your applications and libraries, separating snapshots from production releases
+            </div>
+            <div class="use-case">
+                <strong>🔐 Security & Compliance:</strong> Host artifacts in a controlled, on-premises environment meeting regulatory requirements
+            </div>
+            <div class="use-case">
+                <strong>🎯 Version Control:</strong> Track different versions of artifacts and maintain complete deployment history
+            </div>
+
+            <h3>Example</h3>
+            <div class="example">
+                <strong>Repository Name:</strong> my-app-releases-local<br/>
+                <strong>Purpose:</strong> Store production releases<br/>
+                <strong>Contents:</strong> my-app-1.0.0.jar, my-app-1.0.1.jar, my-app-2.0.0.jar<br/>
+                <strong>Access Pattern:</strong> https://artifactory.company.com/artifactory/my-app-releases-local/
+            </div>
+
+            <h3>Naming Convention Example</h3>
+            <div class="example">
+                tomcat-mvn-release-local<br/>
+                tomcat-mvn-snapshot-local<br/>
+                docker-images-local<br/>
+                npm-packages-local
+            </div>
+        </div>
+    </div>
+
+    <!-- Remote Repositories -->
+    <div class="section page-break">
+        <h2>Remote Repositories</h2>
+        
+        <div class="repo-type">
+            <h3>What Are Remote Repositories?</h3>
+            <p>Remote repositories act as a proxy and cache for external artifact repositories. Instead of allowing direct access to external sources like Maven Central, Docker Hub, or NPM registry, developers pull artifacts through Artifactory. This approach caches dependencies locally, reduces external network traffic, and allows for policy enforcement.</p>
+            
+            <div class="key-points">
+                <strong>Key Characteristics:</strong>
+                <ul>
+                    <li>Proxy to external repositories (Maven Central, Docker Hub, PyPI, NPM, etc.)</li>
+                    <li>Caches artifacts locally for faster retrieval</li>
+                    <li>Reduces bandwidth and external network dependency</li>
+                    <li>Can enforce security and compliance policies</li>
+                    <li>Artifacts fetched on-demand (lazy loading)</li>
+                </ul>
+            </div>
+
+            <h3>Use Cases</h3>
+            <div class="use-case">
+                <strong>🚀 Dependency Caching:</strong> Cache dependencies from Maven Central, eliminating repeated downloads and improving build speed for teams using the same libraries
+            </div>
+            <div class="use-case">
+                <strong>🌐 Network Optimization:</strong> Reduce internet bandwidth by proxying Docker pulls through Artifactory instead of pulling directly from Docker Hub
+            </div>
+            <div class="use-case">
+                <strong>🔒 Access Control:</strong> Enforce security policies by restricting which external dependencies can be used in your organization
+            </div>
+            <div class="use-case">
+                <strong>⚡ Offline Development:</strong> Once cached, artifacts are available even if external sources become unavailable
+            </div>
+            <div class="use-case">
+                <strong>📊 Audit & Compliance:</strong> Track and log all external dependency usage for compliance and security audits
+            </div>
+
+            <h3>Example</h3>
+            <div class="example">
+                <strong>Repository Name:</strong> maven-central-remote<br/>
+                <strong>Source:</strong> https://repo1.maven.org/maven2<br/>
+                <strong>Purpose:</strong> Cache Maven Central dependencies<br/>
+                <strong>First Access:</strong> Fetches artifact from Maven Central and caches it<br/>
+                <strong>Subsequent Accesses:</strong> Serves from local cache
+            </div>
+
+            <h3>Real-World Example</h3>
+            <div class="example">
+                <strong>Scenario:</strong> 50 developers pulling org.springframework:spring-core:5.3.0<br/>
+                <strong>Without Remote Repo:</strong> 50 downloads × 2MB = 100MB bandwidth<br/>
+                <strong>With Remote Repo:</strong> 1 download from external, 49 from cache = 2MB + cache hits<br/>
+                <strong>Savings:</strong> 98MB bandwidth and 10+ seconds faster builds
+            </div>
+        </div>
+    </div>
+
+    <!-- Virtual Repositories -->
+    <div class="section">
+        <h2>Virtual Repositories</h2>
+        
+        <div class="repo-type">
+            <h3>What Are Virtual Repositories?</h3>
+            <p>Virtual repositories provide a single endpoint that aggregates multiple local and/or remote repositories. They don't store artifacts themselves but instead act as a logical grouping, allowing clients to access both internal and external artifacts through one URL. This simplifies dependency resolution and provides flexibility in repository management.</p>
+            
+            <div class="key-points">
+                <strong>Key Characteristics:</strong>
+                <ul>
+                    <li>Aggregates multiple local and remote repositories</li>
+                    <li>Single URL for accessing multiple repositories</li>
+                    <li>Doesn't store artifacts (logical grouping)</li>
+                    <li>Simplifies dependency management for clients</li>
+                    <li>Allows repository layout flexibility</li>
+                </ul>
+            </div>
+
+            <h3>Use Cases</h3>
+            <div class="use-case">
+                <strong>🎯 Unified Access Point:</strong> Provide developers with a single repository URL that includes both your internal artifacts and cached external dependencies
+            </div>
+            <div class="use-case">
+                <strong>🔄 Repository Migration:</strong> Switch between repositories without changing client configurations
+            </div>
+            <div class="use-case">
+                <strong>📂 Logical Organization:</strong> Group artifacts by function or team while maintaining simple client access
+            </div>
+            <div class="use-case">
+                <strong>🛡️ Security & Filtering:</strong> Apply consistent policies across multiple repositories through a single endpoint
+            </div>
+
+            <h3>Example</h3>
+            <div class="example">
+                <strong>Virtual Repository Name:</strong> libs-all<br/>
+                <strong>Includes:</strong><br/>
+                &nbsp;&nbsp;├─ my-app-releases-local<br/>
+                &nbsp;&nbsp;├─ my-app-snapshots-local<br/>
+                &nbsp;&nbsp;└─ maven-central-remote<br/>
+                <strong>Client Configuration (pom.xml):</strong><br/>
+                &lt;repository&gt;<br/>
+                &nbsp;&nbsp;&lt;url&gt;https://artifactory.company.com/artifactory/libs-all&lt;/url&gt;<br/>
+                &lt;/repository&gt;<br/>
+                <strong>Benefit:</strong> Single URL handles internal + external dependencies
+            </div>
+
+            <h3>Advanced Example: Graduated Release Pipeline</h3>
+            <div class="example">
+                <strong>Virtual Repository:</strong> maven-prod<br/>
+                <strong>Repository Order:</strong><br/>
+                1. my-app-releases-local (Production releases)<br/>
+                2. third-party-libs-local (Vetted external libs)<br/>
+                3. maven-central-remote (Fallback to Maven Central)<br/>
+                <strong>Benefit:</strong> Ensures production code uses approved artifacts first
+            </div>
+        </div>
+    </div>
+
+    <!-- Federated Repositories -->
+    <div class="section page-break">
+        <h2>Federated Repositories</h2>
+        
+        <div class="repo-type">
+            <h3>What Are Federated Repositories?</h3>
+            <p>Federated repositories enable multi-site DevOps by allowing multiple Artifactory instances across different geographic locations to act as a unified repository. Changes to artifacts and configurations are automatically synchronized across all federated members using bi-directional mirroring and replication.</p>
+            
+            <div class="key-points">
+                <strong>Key Characteristics:</strong>
+                <ul>
+                    <li>Connects up to 10 local repositories across different JFrog Platform deployments</li>
+                    <li>Bi-directional synchronization and mirroring</li>
+                    <li>Automatic metadata synchronization</li>
+                    <li>Uses binary provider tokens for secure federation (no certificate setup needed)</li>
+                    <li>All artifact types supported (Maven, Docker, NPM, etc.)</li>
+                </ul>
+            </div>
+
+            <h3>Use Cases</h3>
+            <div class="use-case">
+                <strong>🌍 Global Distribution:</strong> Enable development teams across multiple geographic locations (US, EU, APAC) to share artifacts with local access speeds
+            </div>
+            <div class="use-case">
+                <strong>🏢 Headquarters + Remote Offices:</strong> Synchronize artifacts between headquarters and satellite offices while maintaining local access
+            </div>
+            <div class="use-case">
+                <strong>🔄 Disaster Recovery & Redundancy:</strong> Replicate artifacts across multiple sites for business continuity and failover scenarios
+            </div>
+            <div class="use-case">
+                <strong>📡 Edge Computing:</strong> Distribute artifacts to edge locations with automatic synchronization
+            </div>
+
+            <h3>Example</h3>
+            <div class="example">
+                <strong>Federated Repository Structure:</strong><br/>
+                Federation Name: docker-images-global<br/>
+                <br/>
+                Members:<br/>
+                &nbsp;&nbsp;├─ HQ-US: Artifactory in New York<br/>
+                &nbsp;&nbsp;├─ EU: Artifactory in Frankfurt<br/>
+                &nbsp;&nbsp;├─ APAC: Artifactory in Singapore<br/>
+                &nbsp;&nbsp;└─ Canada: Artifactory in Toronto<br/>
+                <br/>
+                <strong>Synchronization:</strong> When engineer in Singapore deploys app-v1.0.0.tar to Singapore repo, it automatically syncs to all other sites within minutes
+            </div>
+
+            <h3>Multi-Type Federation Example</h3>
+            <div class="example">
+                Organization can create multiple federations:<br/>
+                <br/>
+                1. docker-images-federation<br/>
+                &nbsp;&nbsp;├─ HQ Docker repo (New York)<br/>
+                &nbsp;&nbsp;├─ EU Docker repo (Frankfurt)<br/>
+                &nbsp;&nbsp;└─ APAC Docker repo (Singapore)<br/>
+                <br/>
+                2. npm-packages-federation<br/>
+                &nbsp;&nbsp;├─ HQ NPM repo (New York)<br/>
+                &nbsp;&nbsp;├─ EU NPM repo (Frankfurt)<br/>
+                &nbsp;&nbsp;└─ APAC NPM repo (Singapore)<br/>
+                <br/>
+                <strong>Benefit:</strong> Teams use local repositories while staying synchronized globally
+            </div>
+        </div>
+    </div>
+
+    <!-- Comparison Matrix -->
+    <div class="section page-break">
+        <h2>Comparison Matrix</h2>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Feature</th>
+                    <th>Local</th>
+                    <th>Remote</th>
+                    <th>Virtual</th>
+                    <th>Federated</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Stores Artifacts</strong></td>
+                    <td>✅ Yes</td>
+                    <td>✅ Yes (cache)</td>
+                    <td>❌ No (logical)</td>
+                    <td>✅ Yes</td>
+                </tr>
+                <tr>
+                    <td><strong>Internal/External</strong></td>
+                    <td>Internal</td>
+                    <td>External proxy</td>
+                    <td>Both</td>
+                    <td>Internal multi-site</td>
+                </tr>
+                <tr>
+                    <td><strong>Single URL Endpoint</strong></td>
+                    <td>Yes</td>
+                    <td>Yes</td>
+                    <td>✅ Yes (aggregates)</td>
+                    <td>Yes (per site)</td>
+                </tr>
+                <tr>
+                    <td><strong>Caching Capability</strong></td>
+                    <td>N/A</td>
+                    <td>✅ Yes (lazy load)</td>
+                    <td>N/A</td>
+                    <td>✅ Yes (local)</td>
+                </tr>
+                <tr>
+                    <td><strong>Synchronization</strong></td>
+                    <td>Manual uploads</td>
+                    <td>On-demand</td>
+                    <td>N/A</td>
+                    <td>✅ Auto (bi-directional)</td>
+                </tr>
+                <tr>
+                    <td><strong>Geographic Distribution</strong></td>
+                    <td>Single site</td>
+                    <td>Single site</td>
+                    <td>Single site</td>
+                    <td>✅ Multi-site (up to 10)</td>
+                </tr>
+                <tr>
+                    <td><strong>Use Case</strong></td>
+                    <td>Store own artifacts</td>
+                    <td>Cache external deps</td>
+                    <td>Unified access</td>
+                    <td>Global distribution</td>
+                </tr>
+                <tr>
+                    <td><strong>Maintenance Complexity</strong></td>
+                    <td>Low</td>
+                    <td>Low-Medium</td>
+                    <td>Low</td>
+                    <td>Medium-High</td>
+                </tr>
+                <tr>
+                    <td><strong>Scalability</strong></td>
+                    <td>Single instance</td>
+                    <td>Single instance</td>
+                    <td>Single instance</td>
+                    <td>✅ Enterprise scale</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>Decision Matrix: Which Repository Type to Use?</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Scenario</th>
+                    <th>Recommended Type</th>
+                    <th>Reason</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Store your application JAR files and Docker images</td>
+                    <td><strong>Local</strong></td>
+                    <td>You control and deploy these artifacts</td>
+                </tr>
+                <tr>
+                    <td>Cache Maven Central dependencies locally</td>
+                    <td><strong>Remote</strong></td>
+                    <td>Proxy external source, reduce internet bandwidth</td>
+                </tr>
+                <tr>
+                    <td>Provide one URL for Maven builds to fetch both internal and external JARs</td>
+                    <td><strong>Virtual</strong></td>
+                    <td>Aggregates local + remote into single endpoint</td>
+                </tr>
+                <tr>
+                    <td>Synchronize Docker images across US and EU data centers</td>
+                    <td><strong>Federated</strong></td>
+                    <td>Automatic multi-site replication with local access</td>
+                </tr>
+                <tr>
+                    <td>Restrict Docker Hub access to approved images only</td>
+                    <td><strong>Remote</strong></td>
+                    <td>Acts as controlled proxy with policy enforcement</td>
+                </tr>
+                <tr>
+                    <td>Support 1000+ developers with artifact access worldwide</td>
+                    <td><strong>Federated</strong></td>
+                    <td>Geographic distribution with automatic sync</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Best Practices -->
+    <div class="section">
+        <h2>Best Practices & Recommendations</h2>
+
+        <h3>Naming Conventions</h3>
+        <div class="key-points">
+            <strong>Recommended Format: [name]-[type]-[qualifier]-[repository-type]</strong>
+            <ul>
+                <li>✅ <code>my-app-mvn-release-local</code> - Clear, structured name</li>
+                <li>✅ <code>docker-images-prod-local</code> - Indicates Docker images for production</li>
+                <li>✅ <code>npm-public-remote</code> - NPM proxy for public packages</li>
+                <li>✅ <code>maven-all-virtual</code> - Virtual repo combining Maven repos</li>
+                <li>❌ <code>repo1</code> - Too vague</li>
+            </ul>
+        </div>
+
+        <h3>Repository Organization Strategy</h3>
+        <div class="key-points">
+            <strong>Recommended approach for medium to large organizations:</strong>
+            <ul>
+                <li><strong>1. Local Repositories:</strong> Separate for releases and snapshots (e.g., app-releases-local, app-snapshots-local)</li>
+                <li><strong>2. Remote Repositories:</strong> One per external source (maven-central-remote, dockerhub-remote, pypi-remote)</li>
+                <li><strong>3. Virtual Repositories:</strong> Production-ready (prod-all-virtual), Development (dev-all-virtual)</li>
+                <li><strong>4. Federated (if applicable):</strong> Mirror critical artifacts across geographies</li>
+            </ul>
+        </div>
+
+        <h3>Security Considerations</h3>
+        <div class="use-case">
+            <strong>🔐 Access Control:</strong> Use virtual repositories to enforce permission policies across multiple repositories
+        </div>
+        <div class="use-case">
+            <strong>🔍 Artifact Scanning:</strong> Integrate with security scanning tools to detect vulnerabilities in cached dependencies
+        </div>
+        <div class="use-case">
+            <strong>🛡️ Federated Security:</strong> Use binary provider tokens (no certificates required) for inter-site communication
+        </div>
+
+        <h3>Performance Optimization</h3>
+        <div class="key-points">
+            <ul>
+                <li><strong>Remote Caching:</strong> Configure pull replication to pre-populate caches during off-hours</li>
+                <li><strong>Virtual Ordering:</strong> Order repositories in virtual repos by frequency of use (most used first)</li>
+                <li><strong>Retention Policies:</strong> Clean up old snapshots to reduce storage and improve performance</li>
+                <li><strong>Federated Sync:</strong> Schedule federation sync during low-traffic periods for large synchronizations</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Conclusion -->
+    <div class="conclusion">
+        <h3>Conclusion</h3>
+        <p>JFrog Artifactory's four repository types—Local, Remote, Virtual, and Federated—provide a flexible and scalable solution for managing artifacts across the entire software development lifecycle. The choice of which repository type to use depends on your specific needs:</p>
+        <ul>
+            <li><strong>Local</strong> for your own artifacts</li>
+            <li><strong>Remote</strong> for external dependencies</li>
+            <li><strong>Virtual</strong> for unified access</li>
+            <li><strong>Federated</strong> for global distribution</li>
+        </ul>
+        <p>By understanding the strengths and use cases of each type, you can design an artifact management strategy that supports your organization's growth, improves build performance, enhances security, and enables seamless collaboration across teams and geographies.</p>
+    </div>
+
+    <footer>
+        <p>JFrog Artifactory Repository Types Guide | Generated February 20, 2026</p>
+        <p>For more information, visit: https://jfrog.com/artifactory/</p>
+    </footer>
+</body>
+</html>
