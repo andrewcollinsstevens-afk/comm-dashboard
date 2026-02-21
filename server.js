@@ -55,6 +55,8 @@ app.get('/api/verify-token', (req, res) => {
 app.get('/api/communications', authenticate, async (req, res) => {
     const readLogsFunction = async () => {
         const allLogs = [];
+        const now = Date.now();
+        const ONE_MINUTE_MS = 60000; // 1 minute delay buffer
 
         // Read active logs
         if (fs.existsSync(ACTIVE_DIR)) {
@@ -94,7 +96,7 @@ app.get('/api/communications', authenticate, async (req, res) => {
             });
         }
 
-        // Read financial agent logs (with redaction)
+        // Read financial agent logs (with redaction + 1-minute delay)
         if (fs.existsSync(FINANCIAL_LOGS_DIR)) {
             const financialFiles = fs.readdirSync(FINANCIAL_LOGS_DIR).filter(f => f.endsWith('.jsonl'));
             financialFiles.forEach(file => {
@@ -105,9 +107,14 @@ app.get('/api/communications', authenticate, async (req, res) => {
                     if (line.trim()) {
                         try {
                             const logEntry = JSON.parse(line);
-                            // Apply redaction to financial logs for dashboard
-                            const redactedEntry = createRedactedLogEntry(logEntry);
-                            allLogs.push(redactedEntry);
+                            const logTimestamp = new Date(logEntry.timestamp).getTime();
+                            
+                            // Only show logs that are at least 1 minute old (1-minute delay buffer)
+                            if (now - logTimestamp >= ONE_MINUTE_MS) {
+                                // Apply redaction to financial logs for dashboard
+                                const redactedEntry = createRedactedLogEntry(logEntry);
+                                allLogs.push(redactedEntry);
+                            }
                         } catch (e) {
                             console.error(`Error parsing financial log in ${file}:`, e.message);
                         }
