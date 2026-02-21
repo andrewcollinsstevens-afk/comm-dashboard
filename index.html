@@ -266,6 +266,25 @@
             background: #334155;
         }
 
+        tr:not(.details-row):hover {
+            background: #334155;
+            cursor: pointer;
+        }
+
+        .details-row {
+            background: #0f172a !important;
+        }
+
+        .details-row:hover {
+            background: #0f172a !important;
+            cursor: default;
+        }
+
+        code {
+            font-family: 'Courier New', monospace;
+            font-size: 0.85em;
+        }
+
         .status-badge {
             display: inline-block;
             padding: 5px 12px;
@@ -436,12 +455,14 @@
                     <thead>
                         <tr>
                             <th>Timestamp</th>
+                            <th>Direction</th>
                             <th>Task Name</th>
+                            <th>Message Type</th>
+                            <th>Communication</th>
                             <th>Status</th>
                             <th>Outcome</th>
                             <th>Cost</th>
                             <th>Duration</th>
-                            <th>Error</th>
                         </tr>
                     </thead>
                     <tbody id="tableBody"></tbody>
@@ -575,29 +596,74 @@
             updateStats();
         }
 
+        function getDirectionLabel(direction) {
+            const directionMap = {
+                'main→subagent': '🔽 Main → Sub-Agent',
+                'subagent→main': '🔼 Sub-Agent → Main',
+                'subagent→subagent': '⇄ Sub-Agent ↔ Sub-Agent'
+            };
+            return directionMap[direction] || direction || '-';
+        }
+
+        function truncateMessage(msg, maxLen = 80) {
+            if (!msg) return '-';
+            return msg.length > maxLen ? msg.substring(0, maxLen) + '...' : msg;
+        }
+
         function renderTable() {
             const tbody = document.getElementById('tableBody');
 
             if (filteredData.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 40px; color: #94a3b8;">No communications found</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="9" style="text-align: center; padding: 40px; color: #94a3b8;">No communications found</td></tr>';
                 document.getElementById('filterResults').textContent = '';
                 return;
             }
 
             document.getElementById('filterResults').textContent =
-                `Showing ${filteredData.length} of ${allData.length} tasks`;
+                `Showing ${filteredData.length} of ${allData.length} communications`;
 
-            tbody.innerHTML = filteredData.map(record => `
-                <tr>
+            tbody.innerHTML = filteredData.map((record, idx) => `
+                <tr onclick="toggleDetails(${idx})" style="cursor: pointer;">
                     <td>${formatDate(record.timestamp)}</td>
+                    <td><span style="font-size: 0.9em;">${getDirectionLabel(record.direction)}</span></td>
                     <td><span class="task-name">${record.taskName || 'N/A'}</span></td>
+                    <td><span style="color: #93c5fd; font-size: 0.85em; background: #0f172a; padding: 3px 8px; border-radius: 3px;">${record.messageType || '-'}</span></td>
+                    <td style="max-width: 300px; word-break: break-word;" title="${record.message || ''}">${truncateMessage(record.message)}</td>
                     <td><span class="status-badge status-${record.status}">${record.status}</span></td>
-                    <td>${record.outcome || '-'}</td>
+                    <td style="max-width: 200px; word-break: break-word;" title="${record.outcome || ''}">${truncateMessage(record.outcome, 60)}</td>
                     <td><span class="cost-badge">$${((record.cost?.api_cost || 0)).toFixed(4)}</span></td>
                     <td><span class="duration">${record.duration_seconds || 0}s</span></td>
-                    <td>${record.error ? `<span class="error-text">${record.error}</span>` : '-'}</td>
+                </tr>
+                <tr id="details-${idx}" class="details-row" style="display: none;">
+                    <td colspan="9" style="background: #0f172a; padding: 20px; border-top: 1px solid #334155;">
+                        <div style="color: #cbd5e1;">
+                            <strong style="color: #93c5fd;">📨 Full Communication Details</strong><br><br>
+                            <strong>Session ID:</strong> <code style="background: #1e293b; padding: 2px 6px; border-radius: 3px; color: #60a5fa;">${record.sessionId || 'N/A'}</code><br>
+                            <strong>Sub-Agent ID:</strong> <code style="background: #1e293b; padding: 2px 6px; border-radius: 3px; color: #60a5fa;">${record.subagentId || 'N/A'}</code><br>
+                            <strong>Direction:</strong> ${getDirectionLabel(record.direction)}<br>
+                            <strong>Task Description:</strong> ${record.taskDescription || 'N/A'}<br><br>
+                            <strong>Message:</strong><br>
+                            <div style="background: #1e293b; padding: 12px; border-radius: 4px; margin: 10px 0; border-left: 3px solid #3b82f6; word-wrap: break-word; white-space: pre-wrap;">
+                                ${record.message || '-'}
+                            </div>
+                            <strong>Outcome:</strong><br>
+                            <div style="background: #1e293b; padding: 12px; border-radius: 4px; margin: 10px 0; border-left: 3px solid #10b981; word-wrap: break-word; white-space: pre-wrap;">
+                                ${record.outcome || '-'}
+                            </div>
+                            <strong>Tokens Used:</strong> ${record.cost?.tokens_used || 0} | 
+                            <strong>API Cost:</strong> $${((record.cost?.api_cost || 0)).toFixed(6)}<br>
+                            ${record.error ? `<strong style="color: #fca5a5;">Error:</strong> ${record.error}<br>` : ''}
+                        </div>
+                    </td>
                 </tr>
             `).join('');
+        }
+
+        function toggleDetails(idx) {
+            const detailsRow = document.getElementById(`details-${idx}`);
+            if (detailsRow) {
+                detailsRow.style.display = detailsRow.style.display === 'none' ? 'table-row' : 'none';
+            }
         }
 
         function updateStats() {
